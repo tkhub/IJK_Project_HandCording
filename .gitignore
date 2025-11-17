@@ -1,3 +1,11 @@
 .settings/
 Debug/
 Relese/
+.cproject
+.mxproject
+.project
+*.launch
+*.o
+*.su
+*.cyclo
+*.d
