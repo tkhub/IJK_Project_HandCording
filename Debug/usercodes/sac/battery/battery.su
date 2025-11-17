@@ -1,0 +1,8 @@
+../usercodes/sac/battery/battery.c:78:6:batteryInit	16	static
+../usercodes/sac/battery/battery.c:86:6:battery_10ms	8	static
+../usercodes/sac/battery/battery.c:102:7:batteryRead	4	static
+../usercodes/sac/battery/battery.c:106:17:batteryReadStateatus	4	static
+../usercodes/sac/battery/battery.c:111:9:batteryState2String	24	static
+../usercodes/sac/battery/battery.c:149:9:batteryTest	72	static
+../usercodes/sac/battery/battery.c:162:8:batteryLevelDetection	24	static
+../usercodes/sac/battery/battery.c:198:17:batteryLevel2batteryState	16	static

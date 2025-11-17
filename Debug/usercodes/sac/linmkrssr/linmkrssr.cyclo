@@ -1,0 +1,17 @@
+../usercodes/sac/linmkrssr/linmkrssr.c:156:6:linesensorsInit	1
+../usercodes/sac/linmkrssr/linmkrssr.c:174:6:linesensorsCalibration	1
+../usercodes/sac/linmkrssr/linmkrssr.c:204:6:linesensorsMeasure_1ms	1
+../usercodes/sac/linmkrssr/linmkrssr.c:222:7:linesensorsReadPosition	4
+../usercodes/sac/linmkrssr/linmkrssr.c:239:9:linesensorsReadBin	1
+../usercodes/sac/linmkrssr/linmkrssr.c:243:6:linesensorsDebug	1
+../usercodes/sac/linmkrssr/linmkrssr.c:255:6:markersensorsInit	1
+../usercodes/sac/linmkrssr/linmkrssr.c:261:6:markersensorsCalibration	1
+../usercodes/sac/linmkrssr/linmkrssr.c:273:6:markersensorsMeasure_1ms	1
+../usercodes/sac/linmkrssr/linmkrssr.c:281:6:markersensorsDebug	1
+../usercodes/sac/linmkrssr/linmkrssr.c:286:9:markersensorsRead	1
+../usercodes/sac/linmkrssr/linmkrssr.c:311:14:nrmGain	1
+../usercodes/sac/linmkrssr/linmkrssr.c:315:14:nrmOffset	1
+../usercodes/sac/linmkrssr/linmkrssr.c:319:17:wb2threshold	1
+../usercodes/sac/linmkrssr/linmkrssr.c:323:14:normalize	3
+../usercodes/sac/linmkrssr/linmkrssr.c:335:14:iirlpf	1
+../usercodes/sac/linmkrssr/linmkrssr.c:339:13:hysteresis	4

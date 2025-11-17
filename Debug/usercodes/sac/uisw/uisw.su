@@ -1,0 +1,3 @@
+../usercodes/sac/uisw/uisw.c:101:6:uiswInit	16	static
+../usercodes/sac/uisw/uisw.c:115:6:uisw_10ms	16	static
+../usercodes/sac/uisw/uisw.c:232:13:uiswRead	16	static,ignoring_inline_asm

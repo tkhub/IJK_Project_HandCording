@@ -1,0 +1,156 @@
+/**
+ * @file buzzer.c
+ * @brief 簡単な説明  
+ * @author takap
+ * @date Nov 15, 2025
+ * @Version 0.00
+ */
+
+/*========VVVV Include Standard Header START VVVV============================*/
+/*========AAAA Include Standard Header END AAAA==============================*/
+
+/*========VVVV Include Local Header START VVVV===============================*/
+#include "buzzer.h"
+#include "gpio.h"
+
+#ifdef _ENABLE_BUZZER_TEST_
+#include <stdio.h>
+#include <string.h>
+#endif /* _ENABLE_BUZZER_TEST_ */
+
+/*========AAAA Include Local Header END AAAA=================================*/
+
+/*========VVVV Typedef Definition START VVVV=================================*/
+/*========AAAA Typedef Definition END AAAA===================================*/
+
+/*========VVVV MACRO Definition START VVVV===================================*/
+/*========AAAA MACRO Definition END AAAA=====================================*/
+
+/*========VVVV GLOBAL Variable Definition START VVVV=========================*/
+/* int global_var; */ /* ヘッダファイルで説明済みのためDoxygenのコメントは不要 */
+
+/*========AAAA GLOBAL Variable Definition END AAAA===========================*/
+
+/*========VVVV Private Variable Definition START VVVV========================*/
+
+static buzzerSchedule_t* buzzerScheduleBuffer;
+static buzzerSchedule_t buzzerScheduleExec;
+static uint8_t buzzerScheduleBufferSize;
+volatile static uint8_t buzzerBufferTail;
+volatile static uint8_t buzzerBufferHead;
+volatile static uint16_t buzzerOnCount;
+volatile static uint16_t buzzerOffCount;
+volatile static bool buzzerExecFlag;
+
+#ifdef _ENABLE_BUZZER_TEST_
+static uint8_t testModeCnt;
+#endif /* _ENABLE_BUZZER_TEST_ */
+
+/*========AAAA Private Variable Definition END AAAA==========================*/
+
+/*========VVVV Private Function Prototype Declaration START VVVV=============*/
+
+/*========AAAA Private Function Prototype Declaration END AAAA===============*/
+
+/*========VVVV GLOBAL Function Definition START VVVV=========================*/
+
+void buzzerInit(buzzerSchedule_t* bzbfr, uint8_t bzbfrsize) {
+    buzzerScheduleBuffer = bzbfr;
+    buzzerScheduleBufferSize = bzbfrsize;
+    buzzerBufferHead = 0;
+    buzzerBufferTail = 0;
+    buzzerOnCount = 0;
+    buzzerOffCount = 0;
+    buzzerExecFlag = false;
+#ifdef _ENABLE_BUZZER_TEST_
+    testModeCnt = 0;
+#endif /* _ENABLE_BUZZER_TEST_ */
+}
+
+void buzzer_10ms(void) {
+    if (buzzerExecFlag) {
+        if (buzzerOnCount != 0) {
+            HAL_GPIO_WritePin(BUZZER_GPIO_Port,BUZZER_Pin,1);
+            buzzerOnCount--;
+        }
+        else if (buzzerOffCount != 0) {
+            HAL_GPIO_WritePin(BUZZER_GPIO_Port,BUZZER_Pin,0);
+            buzzerOffCount--;
+        }
+        else {
+            buzzerExecFlag = false;
+        }
+
+    }
+    else {
+        if (buzzerBufferHead != buzzerBufferTail) {
+            buzzerBufferHead = (buzzerBufferHead + 1) % buzzerScheduleBufferSize;
+            buzzerScheduleExec = *(buzzerScheduleBuffer + buzzerBufferHead);
+            buzzerOnCount = buzzerScheduleExec.oncount10ms;
+            buzzerOffCount = buzzerScheduleExec.offcount10ms;
+            buzzerExecFlag = true;
+        }
+    }
+}
+
+void buzzerSetSchedule(buzzerSchedule_t bzsch) {
+    __disable_irq();
+    *(buzzerScheduleBuffer + buzzerBufferTail) = bzsch;
+    buzzerBufferTail = (buzzerBufferTail + 1) % buzzerScheduleBufferSize;
+    __enable_irq();
+}
+
+void buzzerSetScheduleMs(uint16_t onMs, uint16_t offMs) {
+    buzzerSchedule_t tmp;
+    tmp.oncount10ms = onMs / 10;
+    tmp.offcount10ms = offMs / 10;
+    buzzerSetSchedule(tmp);
+}
+
+#ifdef _ENABLE_BUZZER_TEST_
+uint8_t buzzerTest(char* strBuffer, uint8_t maxBufferSize) {
+    uint8_t len;
+    switch (testModeCnt) {
+    case 0:
+        buzzerSetScheduleMs(100, 100);
+        len = snprintf(strBuffer, maxBufferSize,"0: on = 100ms, off = 100ms");
+        testModeCnt++;
+        HAL_Delay(500);
+        break;
+
+    case 1:
+        buzzerSetScheduleMs(500, 250);
+        buzzerSetScheduleMs(500, 250);
+        len = snprintf(strBuffer, maxBufferSize,"1:on = 500ms, off = 250ms\n\r2:on = 500ms, off = 250ms\n\r");
+        testModeCnt++;
+        HAL_Delay(2000);
+        break;
+
+    case 2:
+        buzzerSetScheduleMs(50, 50);
+        buzzerSetScheduleMs(50, 50);
+        buzzerSetScheduleMs(50, 50);
+        len = snprintf(strBuffer, maxBufferSize,"1: on = 50ms, off = 50ms\n\r2: on = 50ms, off = 50ms\n\r3: on = 50ms, off = 50ms\n\r");
+        testModeCnt++;
+        HAL_Delay(1000);
+        break;
+
+    default :
+        buzzerSetScheduleMs(10, 10);
+        len = snprintf(strBuffer, maxBufferSize,"x: on = 10ms, off = 10ms");
+        testModeCnt = 0;
+        HAL_Delay(2000);
+        break;
+    }
+
+
+    return len;
+}
+#endif /* _ENABLE_BUZZER_TEST_ */
+
+
+/*========AAAA GLOBAL Function Definition END AAAA===========================*/
+
+/*========VVVV Private Function Definition START VVVV========================*/
+
+/*========AAAA Private Function Definition END AAAA==========================*/

@@ -1,0 +1,4 @@
+../usercodes/sac/buzzer/buzzer.c:57:6:buzzerInit	16	static
+../usercodes/sac/buzzer/buzzer.c:70:6:buzzer_10ms	8	static
+../usercodes/sac/buzzer/buzzer.c:96:6:buzzerSetSchedule	16	static,ignoring_inline_asm
+../usercodes/sac/buzzer/buzzer.c:103:6:buzzerSetScheduleMs	24	static
