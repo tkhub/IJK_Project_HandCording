@@ -3,6 +3,5 @@
 ../usercodes/sac/battery/battery.c:102:7:batteryRead	1
 ../usercodes/sac/battery/battery.c:106:17:batteryReadStateatus	1
 ../usercodes/sac/battery/battery.c:111:9:batteryState2String	10
-../usercodes/sac/battery/battery.c:149:9:batteryTest	1
 ../usercodes/sac/battery/battery.c:162:8:batteryLevelDetection	7
 ../usercodes/sac/battery/battery.c:198:17:batteryLevel2batteryState	11
