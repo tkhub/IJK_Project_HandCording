@@ -1,4 +1,0 @@
-../usercodes/sac/buzzer/buzzer.c:57:6:buzzerInit	1
-../usercodes/sac/buzzer/buzzer.c:70:6:buzzer_10ms	5
-../usercodes/sac/buzzer/buzzer.c:96:6:buzzerSetSchedule	1
-../usercodes/sac/buzzer/buzzer.c:103:6:buzzerSetScheduleMs	1

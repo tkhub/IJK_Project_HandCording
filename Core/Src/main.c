@@ -51,15 +51,45 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-volatile uint16_t   ADC1_DMA_data[10];
-volatile uint16_t   ADC2_DMA_data[10];
+volatile uint16_t   ADC1_DMA_data[3];
+volatile uint16_t   ADC2_DMA_data[4];
 volatile uiswevent_t uisw_event_buffer[16];
 buzzerSchedule_t    buzzerScheduleBuffer[16];
+volatile uint16_t   timerIntrDevCnt;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+
+/**
+ * @brief 500usタイマーハンドラA
+ * @detail タイマー割り込み内で実施
+ */
+void timerInterruptHandler_500us(void);
+
+/**
+ * @brief 1msタイマーハンドラA
+ * @detail タイマー割り込み内で実施
+ */
+void timerInterruptHandler_1msA(void);
+/**
+ * @brief 1msタイマーハンドラB
+ * @detail タイマー割り込み内で実施
+ */
+void timerInterruptHandler_1msB(void);
+
+/**
+ * @brief 10msタイマーハンドラA
+ * @detail タイマー割り込み内で実施
+ */
+void timerInterruptHandler_10msA(void);
+/**
+ * @brief 10msタイマーハンドラB
+ * @detail タイマー割り込み内で実施
+ */
+void timerInterruptHandler_10msB(void);
 
 /* USER CODE END PFP */
 
@@ -72,19 +102,30 @@ int __io_putchar(int ch){
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
-    if (htim == &htim3) {
-    //=V=V=V=V= 1ms Timing Start =V=V=V=V=
-        motorsControl_1ms();
-        linesensorsMeasure_1ms();
-        markersensorsMeasure_1ms();
-    //=A=A=A=A= 1ms Timing End =A=A=A=A=
-    }
     if (htim == &htim6) {
-    //=V=V=V=V= 10ms Timing Start =V=V=V=V=
-        uisw_10ms();
-        buzzer_10ms();
-        battery_10ms();
-    //=A=A=A=A= 10ms Timing End =A=A=A=A=
+
+        timerInterruptHandler_500us();
+
+        if (timerIntrDevCnt % 2) {
+            timerInterruptHandler_1msA();
+        }
+        else {
+            timerInterruptHandler_1msB();
+        }
+
+        if (timerIntrDevCnt == 0) {
+            timerInterruptHandler_10msA();
+        }
+        else if (timerIntrDevCnt == 10) {
+            timerInterruptHandler_10msB();
+        }
+
+        if (timerIntrDevCnt == 29) {
+            timerIntrDevCnt = 0;
+        }
+        else {
+            timerIntrDevCnt++;
+        }
     }
     HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
 }
@@ -140,12 +181,12 @@ int main(void)
       HAL_Delay(128 - (cnt * 8));
   }
 
-//  I2C1_BMX055_Init();
-
-
   // ADC start
+  HAL_TIM_Base_Start(&htim3);  //1kHz
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC1_DMA_data, 3);
   HAL_ADC_Start_DMA(&hadc2, (uint32_t *)ADC2_DMA_data, 4);
+
+  // I2C start
 
 
   //motor start
@@ -156,6 +197,7 @@ int main(void)
   HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
 
+
   /// SAC INIT
   uiswInit(uisw_event_buffer, sizeof(uisw_event_buffer)/sizeof(uisw_event_buffer[0]));
   buzzerInit(buzzerScheduleBuffer, sizeof(buzzerScheduleBuffer)/sizeof(buzzerScheduleBuffer[0]));
@@ -164,10 +206,10 @@ int main(void)
   markersensorsInit(&ADC1_DMA_data[2], &ADC1_DMA_data[1]);
   batteryInit(&ADC2_DMA_data[3]);
 
-  // Timer Intr 1ms
-  HAL_TIM_Base_Start_IT(&htim3);
-  // Timer Intr 10ms
-  __HAL_TIM_SET_COUNTER(&htim6, 500);
+
+  // Timer Intr 500us
+  timerIntrDevCnt = 0;
+  __HAL_TIM_SET_COUNTER(&htim6, 250);
   HAL_TIM_Base_Start_IT(&htim6);
   printf("\r\n=== !! IJK BOOT OK !! ===\r\n");
   /* USER CODE END 2 */
@@ -235,6 +277,36 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
+void timerInterruptHandler_500us(void) {
+
+}
+
+void timerInterruptHandler_1msA(void) {
+
+    linesensorsMeasure_1ms();
+    markersensorsMeasure_1ms();
+    //=V=V=V=V= 1ms Timing Start =V=V=V=V=
+
+
+
+    //=A=A=A=A= 1ms Timing End =A=A=A=A=
+    //=V=V=V=V= 10ms Timing Start =V=V=V=V=
+
+    //=A=A=A=A= 10ms Timing End =A=A=A=A=
+}
+
+void timerInterruptHandler_1msB(void) {
+    motorsControl_1ms();
+}
+
+void timerInterruptHandler_10msA(void) {
+    uisw_10ms();
+    buzzer_10ms();
+}
+
+void timerInterruptHandler_10msB(void) {
+    battery_10ms();
+}
 /* USER CODE END 4 */
 
 /**

@@ -1,13 +1,13 @@
 /**
- * @file test_and_debug.h
+ * @file i2cScheduler.h
  * @brief 簡単な説明  
  * @author takap
- * @date Nov 13, 2025
+ * @date Nov 19, 2025
  * @Version 0.00
  */
 
-#ifndef __COMMON_TEST_AND_DEBUG_H___
-#define __COMMON_TEST_AND_DEBUG_H___
+#ifndef __BSC_I2CSCHEDULER_I2CSCHEDULER_H___
+#define __BSC_I2CSCHEDULER_I2CSCHEDULER_H___
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,6 +20,28 @@ extern "C" {
 /*========AAAA Include Local Header END AAAA=================================*/
 
 /*========VVVV Typedef Definition START VVVV=================================*/
+/**
+ * @brief ABC_t 型の列挙体
+ */
+/**
+ * typedef enum {
+ *  A,  //! Aの説明
+ *  B,  //! Bの説明
+ *  C   //! Cの説明
+ * } ABC_t;
+*/
+
+/**
+ * @brief DEF_t 型の構造体
+ */
+/**
+ * typedef struct {
+ *  int D,  //!  Dの説明
+ *  int E,  //!  Eの説明
+ *  int F   //!  Fの説明
+ * } DEF_t;
+*/
+
 /*========AAAA Typedef Definition END AAAA===================================*/
 
 /*========VVVV MACRO Definition START VVVV===================================*/
@@ -27,15 +49,6 @@ extern "C" {
  * @brief マクロ MAX_NANK の説明
  */
 /* # define MAX_NANKA 256 */
-#define _ENABLE_SAC_TEST_   //! SACレイヤーのテスト・デバッグ用のスイッチ
-
-#ifdef _ENABLE_SAC_TEST_
-//#define _ENABLE_UISW_TEST_  //! UISWのテスト・デバッグ用のスイッチ
-// #define _ENABLE_MOTOR_TEST_   //! MOTORのテスト・デバッグ用のスイッチ
-// #define _ENABLE_BUZZER_TEST_    //! BUZZERのテスト・デバッグ用のスイッチ
-// #define _ENABLE_LINEMKR_TEST_   //! ラインセンサ・マーカセンサのテストデバッグ用のスイッチ
-// #define _ENABLE_BATTERY_TEST_   //! バッテリーのテスト・デバッグ用のスイッチ
-#endif /* _ENABLE_SAC_TEST_ */
 
 /*========AAAA MACRO Definition END AAAA=====================================*/
 
@@ -61,10 +74,26 @@ extern "C" {
  * int testFunc(int* buffer, int size)
 */
 
+
+/**
+ * データ構造
+ * アドレス
+ * 通信間隔
+ * データ開始ポインタ
+ * 通信データサイズ
+ *
+ */
+
+/**
+ * @brief i2c
+ */
+void i2cScheduler_1ms(void);
+
+
 /*========AAAA GLOBAL Function Declaration END AAAA==========================*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __COMMON_TEST_AND_DEBUG_H___ */
+#endif /* __BSC_I2CSCHEDULER_I2CSCHEDULER_H___ */
