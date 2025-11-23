@@ -1,9 +1,5 @@
 
 [株式会社アールティー](https://www.rt-shop.jp/)製ロボットキットの[TrainingTracer_V2](https://github.com/rt-net/TrainingTracer_V2_Hardware)用ソフト。
-
-# Features
- 
-"hoge"のセールスポイントや差別化などを説明する
  
 # Requirement
 ## Software
